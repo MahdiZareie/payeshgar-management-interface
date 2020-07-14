@@ -1,3 +1,7 @@
 # Payeshgar Server
 
-This project is actively under development, please come back in a week
+This project is actively under development, please check the issue section for more information.
+
+
+
+ 
