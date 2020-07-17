@@ -73,9 +73,9 @@ CELERY_BROKER_URL = "amqp://{rabbitmq_hostname}:{rabbitmq_port}".format(
 ENVIRONMENT = os.getenv("PAYESHGAR_ENVIRONMENT", "PRODUCTION")
 
 if ENVIRONMENT == "PRODUCTION":
-    from . import production
+    from .production import *
 elif ENVIRONMENT == "DEVELOPMENT":
-    from . import development
+    from .development import *
 
 try:
     from payeshgar_server.settings.local_settings import *
