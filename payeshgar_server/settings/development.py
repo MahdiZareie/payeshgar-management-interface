@@ -31,6 +31,11 @@ LOGGING = {
             'handlers': ['console'],
             'level': "DEBUG",
             'propagate': False,
-        }
+        },
+        'payeshgar': {
+            'handlers': ['console'],
+            'level': os.getenv("PAYESHGAR_LOG_LEVEL", "INFO"),
+            'propagate': False,
+        },
     },
 }
