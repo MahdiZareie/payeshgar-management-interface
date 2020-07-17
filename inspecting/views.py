@@ -8,6 +8,9 @@ from rest_framework.views import APIView
 
 from inspecting import serializers, models, tasks
 from monitoring.models import Agent
+import logging
+
+logger = logging.getLogger("payeshgar.inspecting.api")
 
 
 class InspectionListAPIView(ListAPIView):
@@ -52,6 +55,7 @@ class CreateInspectionResultsAPIView(APIView):
         results = request.data
         force_validate = request.GET.get('validate') == "1"
         if force_validate:
+            logger.warning("Result has been submitted with validate=1 flags")
             serializer = serializers.CreateHTTPInspectionResultSerializer(data=results, many=True)
             serializer.is_valid(raise_exception=True)
         self._run_background_task(results)
