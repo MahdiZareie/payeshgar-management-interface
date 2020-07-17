@@ -26,6 +26,12 @@ LOGGING = {
             'handlers': ['syslog'],
             'level': "ERROR",
             'propagate': False,
-        }
+        },
+        'payeshgar': {
+            'handlers': ['syslog'],
+            'level': os.getenv("PAYESHGAR_LOG_LEVEL", "INFO"),
+            'propagate': False,
+        },
+
     },
 }
