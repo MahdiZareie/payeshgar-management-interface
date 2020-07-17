@@ -12,6 +12,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
 
     'monitoring',
     'inspecting',
@@ -61,6 +62,8 @@ USE_I18N = False
 USE_L10N = False
 
 USE_TZ = False
+
+STATIC_URL = '/static/'
 
 CELERY_BROKER_URL = "amqp://{rabbitmq_hostname}:{rabbitmq_port}".format(
     rabbitmq_hostname=os.environ.get("PAYESHGAR_RABBITMQ_HOSTNAME", "localhost"),
