@@ -3,3 +3,4 @@ Djangorestframework
 celery
 iso3166
 django-ipware
+drf-jwt
