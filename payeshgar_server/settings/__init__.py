@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'inspecting',
 
     'rest_framework',
+    'rest_framework_jwt',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +70,15 @@ CELERY_BROKER_URL = "amqp://{rabbitmq_hostname}:{rabbitmq_port}".format(
     rabbitmq_hostname=os.environ.get("PAYESHGAR_RABBITMQ_HOSTNAME", "localhost"),
     rabbitmq_port=os.environ.get("PAYESHGAR_RABBITMQ_PORT", "5672"),
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+}
 
 ENVIRONMENT = os.getenv("PAYESHGAR_ENVIRONMENT", "PRODUCTION")
 
