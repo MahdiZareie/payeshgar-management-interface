@@ -1,0 +1,565 @@
+swagger: "2.0"
+info:
+  description: "Payeshgar Management Interface API"
+  version: "1.0.0"
+  title: "Payeshgar Management Interface API"
+  license:
+    name: "AGPL-3.0 License"
+    url: "https://opensource.org/licenses/AGPL-3.0"
+host: "localhost:8000"
+externalDocs:
+  description: "Find out more about Payeshgar"
+  url: "https://github.com/MahdiZareie/payeshgar-management-interface"
+basePath: "/api/v1/"
+tags:
+  - name: "Security"
+    description: "All security related APIs"
+    externalDocs:
+      description: "TODO"
+      url: "http://TODO.com"
+
+  - name: "Monitoring"
+    description: "All monitoring related APIs"
+    externalDocs:
+      description: "TODO"
+      url: "http://TODO.com"
+
+  - name: "Inspecting"
+    description: "All inspecting related APIs"
+    externalDocs:
+      description: "TODO"
+      url: "http://TODO.com"
+
+schemes:
+  - "https"
+paths:
+  /security/tokens:
+    post:
+      tags:
+        - "Security"
+      summary: "Create new JWT token"
+      description: ""
+      operationId: "CREATE_TOKEN"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Credential object"
+          required: true
+          schema:
+            $ref: "#/definitions/Credentials"
+      responses:
+        "201":
+          description: "Token has been created"
+          schema:
+            $ref: "#/definitions/Token"
+        "400":
+          description: "Invalid input"
+
+  /monitoring/endpoints:
+    get:
+      tags:
+        - "Monitoring"
+      summary: "get list of all available endpoints"
+      operationId: "LIST_ENDPOINT"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groups"
+          in: "query"
+          description: "filter endpoint by the group value"
+          required: true
+          type: "string"
+        - name: "page"
+          in: "query"
+          description: "page number"
+          required: false
+          type: "integer"
+          default: 1
+        - name: "count"
+          in: "query"
+          description: "endpoint count in response"
+          required: false
+          type: "integer"
+          default: 10
+
+
+      responses:
+        "200":
+          description: "List of endpoint objects"
+          schema:
+            $ref: "#/definitions/PaginatedEndpoints"
+        "401":
+          description: "user is not authenticated"
+        "403":
+          description: "user is not authorized"
+
+    post:
+      tags:
+        - "Monitoring"
+      summary: "create new endpoint"
+      operationId: "CREATE_ENDPOINT"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Endpoint definition"
+          required: true
+          schema:
+            $ref: "#/definitions/Endpoint"
+
+      responses:
+        "201":
+          description: "Endpoint has been created"
+          schema:
+            $ref: "#/definitions/Endpoint"
+        "400":
+          description: "Input data is invalid"
+          schema:
+            $ref: "#/definitions/InputError"
+        "401":
+          description: "user is not authenticated"
+        "403":
+          description: "user is not authorized"
+  /monitoring/endpoints/{uuid}:
+    put:
+      tags:
+        - "Monitoring"
+      summary: "update existing endpoint"
+      operationId: "UPDATE_ENDPOINT"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "uuid"
+          description: "Endpoint id in form of a UUID"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Endpoint definition"
+          required: true
+          schema:
+            $ref: "#/definitions/Endpoint"
+
+      responses:
+        "200":
+          description: "Endpoint has been updated"
+          schema:
+            $ref: "#/definitions/Endpoint"
+        "400":
+          description: "Input data is invalid"
+          schema:
+            $ref: "#/definitions/InputError"
+        "401":
+          description: "user is not authenticated"
+        "403":
+          description: "user is not authorized"
+        "404":
+          description: "object does not exists"
+
+  /monitoring/agents:
+    get:
+      tags:
+        - "Monitoring"
+      summary: "get list of all registered agents"
+      operationId: "LIST_AGENTS"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "page"
+          in: "query"
+          description: "page number"
+          required: false
+          type: "integer"
+          default: 1
+        - name: "count"
+          in: "query"
+          description: "endpoint count in response"
+          required: false
+          type: "integer"
+          default: 10
+
+      responses:
+        "200":
+          description: "List of registered agent objects"
+          schema:
+            $ref: "#/definitions/PaginatedAgents"
+        "401":
+          description: "user is not authenticated"
+        "403":
+          description: "user is not authorized"
+
+    post:
+      tags:
+        - "Monitoring"
+      summary: "register new agent"
+      operationId: "INTRODUCE_AGENT"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Agent definition"
+          required: true
+          schema:
+            $ref: "#/definitions/Agent"
+
+      responses:
+        "200":
+          description: "Agent already existed, and updated"
+          schema:
+            $ref: "#/definitions/Agent"
+        "201":
+          description: "Agent has been created"
+          schema:
+            $ref: "#/definitions/Agent"
+        "400":
+          description: "Input data is invalid"
+          schema:
+            $ref: "#/definitions/InputError"
+        "401":
+          description: "user is not authenticated"
+        "403":
+          description: "user is not authorized"
+
+  /monitoring/groups:
+    get:
+      tags:
+        - "Monitoring"
+      summary: "get list of all available groups"
+      operationId: "LIST_GROUPS"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "page"
+          in: "query"
+          description: "page number"
+          required: false
+          type: "integer"
+          default: 1
+        - name: "count"
+          in: "query"
+          description: "endpoint count in response"
+          required: false
+          type: "integer"
+          default: 10
+
+      responses:
+        "200":
+          description: "List of group objects"
+          schema:
+            $ref: "#/definitions/PaginatedGroups"
+        "401":
+          description: "user is not authenticated"
+        "403":
+          description: "user is not authorized"
+
+    post:
+      tags:
+        - "Monitoring"
+      summary: "create new agent"
+      operationId: "CREATE_GROUP"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Group definition"
+          required: true
+          schema:
+            $ref: "#/definitions/Group"
+
+      responses:
+        "201":
+          description: "Group has been created"
+          schema:
+            $ref: "#/definitions/Group"
+        "400":
+          description: "Input data is invalid"
+          schema:
+            $ref: "#/definitions/InputError"
+        "401":
+          description: "user is not authenticated"
+        "403":
+          description: "user is not authorized"
+
+
+  /inspecting/inspections:
+    get:
+      tags:
+        - "Inspecting"
+      summary: "get list of all inspection objects"
+      operationId: "LIST_INSPECTIONS"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groups"
+          in: "query"
+          description: "filter inspections by the group value"
+          required: true
+          type: "string"
+        - name: "before"
+          in: "query"
+          description: "only inspections before this datetime"
+          required: true
+          type: "string"
+        - name: "after"
+          in: "query"
+          description: "only inspections after this datetime"
+          required: true
+          type: "string"
+        - name: "page"
+          in: "query"
+          description: "page number"
+          required: false
+          type: "integer"
+          default: 1
+        - name: "count"
+          in: "query"
+          description: "endpoint count in response"
+          required: false
+          type: "integer"
+          default: 10
+      responses:
+        "200":
+          description: "List of inspection objects"
+          schema:
+            $ref: "#/definitions/PaginatedInspections"
+        "400":
+          description: "Input data is invalid"
+          schema:
+            $ref: "#/definitions/InputError"
+        "401":
+          description: "user is not authenticated"
+        "403":
+          description: "user is not authorized"
+
+  /inspecting/inspection-results:
+    post:
+      tags:
+        - "Inspecting"
+      summary: "Submit inspection-results in bulk"
+      operationId: "SUBMIT_INSPECTIONS_RESULTS_IN_BULK"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "validate"
+          in: "query"
+          description: "validate input data, it will not validate by default"
+          required: false
+          type: "boolean"
+          default: false
+        - in: "body"
+          name: "body"
+          description: "List of inspection-result objects"
+          required: true
+          schema:
+            $ref: "#/definitions/InspectionResultsList"
+      responses:
+        "200":
+          description: "inspection-results has been received"
+        "400":
+          description: "there are some errors in submitted inspection-results"
+          schema:
+            $ref: "#/definitions/InputError"
+        "401":
+          description: "user is not authenticated"
+        "403":
+          description: "user is not authorized"
+
+definitions:
+  Credentials:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      password:
+        type: string
+
+  Token:
+    type: "object"
+    properties:
+      token:
+        type: "string"
+
+
+  Endpoint:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      monitoring_policy:
+        type: "object"
+        properties:
+          interval:
+            type: "integer"
+            default: 30
+          groups:
+            type: array
+            default: []
+            items:
+              type: string
+      http_details:
+        type: "object"
+        properties:
+          hostname:
+            type: "string"
+          port:
+            type: "integer"
+            default: 443
+          path:
+            type: "string"
+            default: "/"
+          method_name:
+            type: "string"
+            default: "GET"
+            enum:
+              - GET
+          tls:
+            type: "boolean"
+            default: true
+
+
+
+  PaginatedEndpoints:
+    type: "object"
+    properties:
+      count:
+        type: integer
+      next:
+        description: "URL to the next page"
+        type: string
+      previous:
+        description: "URL to the previous page"
+        type: string
+      results:
+        type: array
+        items:
+          $ref: "#/definitions/Endpoint"
+
+  Agent:
+    type: "object"
+    properties:
+      ip:
+        type: string
+      name:
+        type: string
+      country:
+        type: string
+      groups:
+        type: array
+        items:
+          type: string
+      last_activity:
+        type: string
+
+  PaginatedAgents:
+    type: "object"
+    properties:
+      count:
+        type: integer
+      next:
+        description: "URL to the next page"
+        type: string
+      previous:
+        description: "URL to the previous page"
+        type: string
+      results:
+        type: array
+        items:
+          $ref: "#/definitions/Agent"
+
+
+
+  Group:
+    type: "object"
+    properties:
+      name:
+        type: string
+
+  PaginatedGroups:
+    type: "object"
+    properties:
+      count:
+        type: integer
+      next:
+        description: "URL to the next page"
+        type: string
+      previous:
+        description: "URL to the previous page"
+        type: string
+      results:
+        type: array
+        items:
+          $ref: "#/definitions/Group"
+  Inspection:
+    type: "object"
+    properties:
+      endpoint:
+        type: "string"
+      timestamp:
+        type: "string"
+
+  PaginatedInspections:
+    type: "object"
+    properties:
+      count:
+        type: integer
+      next:
+        description: "URL to the next page"
+        type: string
+      previous:
+        description: "URL to the previous page"
+        type: string
+      results:
+        type: array
+        items:
+          $ref: "#/definitions/Inspection"
+
+  InspectionResultsList:
+    type: "object"
+    properties:
+      inspection:
+        type: string
+      connection_status:
+        type: string
+        enum:
+          - SUCCEED
+          - CONN-FAILED
+          - TIMED-OUT
+      status_code:
+        type: string
+      response_time:
+        type: number
+        format: floating point
+
+
+
+
+  InputError:
+    type: "object"
+    properties:
+      general_error:
+        example: "There is no record in our system with this username and password"
+        description: "error goes here, If it is not related to a specific field"
+        type: string
+        default: ""
+      errors:
+        type: array
+        items:
+          description: "Json object from field_name to a list of errors"
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+            example:
+              first_name: ["first_name should not contains digits"]
+              password: ["password should be at least 8 characters", "password should contains at least one digit"]
+
+
