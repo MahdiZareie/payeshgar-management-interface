@@ -289,8 +289,8 @@ class GroupReadWriteTestCase(APITestCase):
     def test_reading_groups_sunny_day(self):
         models.Group.objects.create(name="sample-group")
         response = self.client.get("/api/v1/monitoring/groups")
-        list_of_groups = json.loads(response.content)
         self.assertEquals(response.status_code, 200)
+        list_of_groups = response.json()['results']
         self.assertEquals(len(list_of_groups), 1)
 
 
@@ -314,21 +314,22 @@ class ReadingEndpointTestCase(APITestCase):
 
     def test_read_endpoints_sunny_day(self):
         response = self.client.get("/api/v1/monitoring/endpoints")
-        data = response.json()
+
         self.assertEquals(response.status_code, 200)
+        data = response.json()['results']
         self.assertEquals(len(data), 10)
 
     def test_read_endpoints_filter_by_non_existing_group(self):
         response = self.client.get("/api/v1/monitoring/endpoints?groups=asia")
-        data = response.json()
         self.assertEquals(response.status_code, 200)
+        data = response.json()['results']
         self.assertEquals(len(data), 0)
 
     def test_read_endpoints_filter_by_default_groups(self):
         for g in self.groups:
             response = self.client.get(f"/api/v1/monitoring/endpoints?groups={g}")
-            data = response.json()
             self.assertEquals(response.status_code, 200)
+            data = response.json()['results']
             self.assertEquals(len(data), 10)
 
     def test_read_endpoints_filter_by_a_specific_group(self):
@@ -336,8 +337,8 @@ class ReadingEndpointTestCase(APITestCase):
         self._create_endpoint([g.name], count=3)
 
         response = self.client.get(f"/api/v1/monitoring/endpoints?groups={g.name}")
-        data = response.json()
         self.assertEquals(response.status_code, 200)
+        data = response.json()['results']
         self.assertEquals(len(data), 3)
 
     def test_read_endpoints_filter_by_two_specific_group(self):
@@ -356,7 +357,8 @@ class ReadingEndpointTestCase(APITestCase):
 
         data = response.json()
 
-        self.assertTrue(all([endpoint['name'].startswith(name_prefix) for endpoint in data]))
-
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(data), 2 + 3 + 4)
+
+        results = data['results']
+        self.assertTrue(all([endpoint['name'].startswith(name_prefix) for endpoint in results]))
+        self.assertEquals(data['count'], 2 + 3 + 4)

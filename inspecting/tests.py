@@ -36,9 +36,9 @@ class ReadingInspectionsTestCase(APITestCase, InspectionTestingMixin):
     def test_list_all_inspections_sunny_day(self):
         self._create_sample_inspection()
         response = self.client.get("/api/v1/inspecting/inspections")
-        inspections = response.json()
 
         self.assertEquals(response.status_code, 200)
+        inspections = response.json()['results']
 
         self.assertEquals(len(inspections), 9)
 
@@ -58,8 +58,8 @@ class ReadingInspectionsTestCase(APITestCase, InspectionTestingMixin):
         )
         response = self.client.get("/api/v1/inspecting/inspections", data=filters)
 
-        inspections = response.json()
         self.assertEquals(response.status_code, 200)
+        inspections = response.json()['results']
         self.assertEquals(len(inspections), number_of_points)
 
     def test_list_all_inspections_for_specific_groups(self):
@@ -75,9 +75,9 @@ class ReadingInspectionsTestCase(APITestCase, InspectionTestingMixin):
         )
         response = self.client.get("/api/v1/inspecting/inspections", data=filters)
 
-        inspections = response.json()
-
         self.assertEquals(response.status_code, 200)
+
+        inspections = response.json()['results']
 
         # All of them belong to our expected endpoint:
         self.assertTrue(all([i['endpoint'] == expected_endpoint_id for i in inspections]))
@@ -172,4 +172,3 @@ class SubmitInspectionResultTestCase(APITestCase, InspectionTestingMixin):
                                     content_type='application/json')
 
         self.assertEquals(response.status_code, 401)
-
