@@ -1,6 +1,10 @@
+import sys
+
 from .common import *
 
 SECRET_KEY = os.getenv("PAYESHGAR_SECRET_KEY")
+
+TEST_ENVIRONMENT = 'test' in sys.argv
 
 DEBUG = True
 
@@ -84,11 +88,14 @@ REST_FRAMEWORK = {
 }
 
 ENVIRONMENT = os.getenv("PAYESHGAR_ENVIRONMENT", "PRODUCTION")
-
-if ENVIRONMENT == "PRODUCTION":
-    from .production import *
-elif ENVIRONMENT == "DEVELOPMENT":
-    from .development import *
+if TEST_ENVIRONMENT:
+    ENVIRONMENT = "TEST"
+    from .test import *
+else:
+    if ENVIRONMENT == "PRODUCTION":
+        from .production import *
+    elif ENVIRONMENT == "DEVELOPMENT":
+        from .development import *
 
 try:
     from payeshgar_server.settings.local_settings import *
